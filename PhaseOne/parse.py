@@ -21,14 +21,14 @@ def thresholdSim(graph, threshold, turned):
 			if node in turned:
 				continue
 			turned_count = 0
-			predecessor_count = 0
-			for predecessor in graph.predecessors(node):
-				predecessor_count += 1
-				if predecessor in turned:
+			successor_count = 0
+			for successor in graph.successors(node):
+				successor_count += 1
+				if successor in turned:
 					turned_count += 1
-			if predecessor_count == 0:
+			if successor_count == 0:
 				continue
-			if (float(turned_count) / predecessor_count >= threshold):
+			if (float(turned_count) / successor_count >= threshold):
 				turned.add(node)
 				spreading = True
 	return turned
