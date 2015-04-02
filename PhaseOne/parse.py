@@ -41,23 +41,28 @@ def graphThreshold(graph, seed_count, threshold):
 	#nx.draw(graph, node_color=['y' if node in result else 'r' for node in graph], node_size=10)
 
 
+def readIn():
+	G = nx.read_edgelist('../twitter_combined.txt.gz', nodetype=int, create_using=nx.DiGraph())
+	return G
 
-G = nx.read_edgelist('../twitter_combined.txt.gz', nodetype=int, create_using=nx.DiGraph())
-start_node = G.nodes()[0]
-bfs_edges = list(nx.bfs_edges(G,start_node))
+def subGraph(graph):
+	start_node = graph.nodes()[0]
+	bfs_edges = list(nx.bfs_edges(graph,start_node))
+	sub_graph_nodes = set()
+	for i in range(len(bfs_edges)):
+		parent = bfs_edges[i][0]
+		child = bfs_edges[i][1]
+		sub_graph_nodes.add(parent)
+		sub_graph_nodes.add(child)
+		# could end up being 1001, I'm assuming that's ok
+		if len(sub_graph_nodes) >= 1000:
+			break
 
-sub_graph_nodes = set()
-for i in range(len(bfs_edges)):
-	parent = bfs_edges[i][0]
-	child = bfs_edges[i][1]
-	sub_graph_nodes.add(parent)
-	sub_graph_nodes.add(child)
-	# could end up being 1001, I'm assuming that's ok
-	if len(sub_graph_nodes) >= 1000:
-		break
+	sub_graph = graph.subgraph(list(sub_graph_nodes))
+	return sub_graph
 
-sub_graph = G.subgraph(list(sub_graph_nodes))
-#nx.draw(sub_graph, node_size=10)
-#plt.show()
+def display():
+	nx.draw(sub_graph, node_size=10)
+	plt.show()
 
-graphThreshold(sub_graph, 5, .2)
+#graphThreshold(sub_graph, 5, .2)
